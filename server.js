@@ -11,10 +11,13 @@ app.use(cors());
 
 let client;
 
+
 async function connectToDatabase() {
   try {
     client = await MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('Connected to database');
+    const db = client.db('banksignup');
+    Signup = db.collection('Signup'); // Initialize Signup collection
   } catch (error) {
     console.error('Error connecting to database:', error);
     process.exit(1);
