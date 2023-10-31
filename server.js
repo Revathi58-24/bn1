@@ -45,6 +45,25 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
+//signup
+app.post('/api/signup', async (req, res) => {
+  const userData = req.body;
+
+  try {
+
+    const existingUser = await Signup.findOne({ userID: userData.userID, email: userData.email, password: userData.password });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'User details already exists' });
+    }
+    await Signup.insertOne(userData);
+
+    res.status(201).json({ message: 'Let explore new things at Equinox...' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 //accserver
 app.post('/api/accopen', async (req, res) => {
