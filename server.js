@@ -23,6 +23,7 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
+// Define your routes below
 app.post('/api/users', async (req, res) => {
   const userData = req.body;
   console.log('Received User ID:', userData);
@@ -43,29 +44,7 @@ app.post('/api/users', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-//signup
-app.post('/api/signup', async (req, res) => {
-  const userData = req.body;
- // console.log('Received User ID:', userData);
 
-  try {
-    const db = client.db('banksignup');
-    const Signup = db.collection('Signup');
-    const existingUser = await Signup.findOne({ userID: userData.userID, email: userData.email, password: userData.password });
-
-    
-    if (existingUser) {
-      return res.status(400).json({ message: 'User details already exists' });
-    }
-    const newUser = new Signup(userData); //coll
-    await newUser.save();
-
-    res.status(201).json({ message: 'Let explore new things at Equinox...' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
 
 //accserver
 app.post('/api/accopen', async (req, res) => {
@@ -73,14 +52,13 @@ app.post('/api/accopen', async (req, res) => {
 
   try {
     const db = client.db('banksignup');
-    const  Acopen = db.collection('Acopen');
+    const Acopen = db.collection('Acopen');
     const existingUser = await Acopen.findOne({ customId: userData.customId });
 
     if (existingUser) {
       return res.status(400).json({ message: 'User with customId already exists' });
     }
-    const newUser = new Acopen(userData); //coll
-    await newUser.save();
+    await Acopen.insertOne(userData);
 
     res.status(201).json({ message: 'User data saved successfully!' });
   } catch (error) {
@@ -88,20 +66,20 @@ app.post('/api/accopen', async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 //loan1
 app.post('/api/loan1', async (req, res) => {
   const userData = req.body;
 
   try {
     const db = client.db('banksignup');
-    const  Consumerloan = db.collection('Consumerloan');
+    const Consumerloan = db.collection('Consumerloan');
     const existingUser = await Consumerloan.findOne({ savingAccountNumber: userData.savingAccountNumber });
 
     if (existingUser) {
       return res.status(400).json({ message: 'User with saving account# already exists' });
     }
-    const newUser = new Consumerloan(userData); //coll
-    await newUser.save();
+    await Consumerloan.insertOne(userData);
 
     res.status(201).json({ message: 'Your loan application submitted successfully!' });
   } catch (error) {
@@ -114,17 +92,15 @@ app.post('/api/loan1', async (req, res) => {
 app.post('/api/loan2', async (req, res) => {
   const userData = req.body;
 
-
   try {
     const db = client.db('banksignup');
-    const  Homeloan = db.collection('Homeloan');
+    const Homeloan = db.collection('Homeloan');
     const existingUser = await Homeloan.findOne({ savingAccountNumber: userData.savingAccountNumber });
 
     if (existingUser) {
       return res.status(400).json({ message: 'User with Saving account# already exists' });
     }
-    const newUser = new Homeloan(userData); //coll
-    await newUser.save();
+    await Homeloan.insertOne(userData);
 
     res.status(201).json({ message: 'Your loan application submitted successfully!' });
   } catch (error) {
@@ -133,6 +109,7 @@ app.post('/api/loan2', async (req, res) => {
   }
 });
 //loan3
+
 app.post('/api/loan3', async (req, res) => {
   const userData = req.body;
 
@@ -144,9 +121,7 @@ app.post('/api/loan3', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User with saving account# already exists' });
     }
-    const newUser = new Mortgageloan(userData); //coll
-    await newUser.save();
-
+    await Mortgageloan.insertOne(userData);
     res.status(201).json({ message: 'Your loan application submitted successfully!' });
   } catch (error) {
     console.error(error);
@@ -165,15 +140,18 @@ app.post('/api/loan4', async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: 'User with saving account# already exists' });
     }
-    const newUser = new Autoloan(userData); //coll
-    await newUser.save();
-
+   
+    await Autoloan.insertOne(userData);
     res.status(201).json({ message: 'Your loan application submitted successfully!' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+
+
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
